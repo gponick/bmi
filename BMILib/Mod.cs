@@ -78,7 +78,7 @@ namespace BMILib
         public string Author;
         public string Website;
         public List<Octokit.Release> Releases = new List<Release>();
-        private static Uri ghe = new Uri("http://capo.ponicks.com:8086/");
+        private static Uri ghe = new Uri("http://bmi.battletechgame.btmux.com:8086/");
         private static GitHubClient ghClient = new GitHubClient(new ProductHeaderValue("Battletech-Mod-Installer"), ghe);
         
         public Dictionary<string, List<Tuple<string, string>>> JSONDirectories = new Dictionary<string, List<Tuple<string, string>>>();
