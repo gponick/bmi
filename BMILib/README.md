@@ -1,4 +1,12 @@
-﻿XZ implementation based on: https://github.com/sambott/XZ.NET by @sambott
+﻿# BMIlib aka Battletech Mod Installerizer Library
+
+Instally things library
+
+# Because I included SharpCompress and Newtonsoft.Json
+
+
+
+XZ implementation based on: https://github.com/sambott/XZ.NET by @sambott
 
 7Zip implementation based on: https://code.google.com/p/managed-lzma/
 
@@ -9,3 +17,8 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+## Special Thanks
+
+@SaltyHotdogFingersKerensky, @FlukeyFingers, @mpstark

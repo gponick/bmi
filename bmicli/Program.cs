@@ -141,6 +141,17 @@ namespace bmicli
                     List(false);
                 }
             }
+            else if(args[0] == "help")
+            {
+                Console.WriteLine(
+@"
+Battletech Mod Installerizer
+Usage: bmi (list|update) [modname (if update)]
+default without params = bmi update *
+Update supports *
+"
+);
+            }
         }
     }
 }
