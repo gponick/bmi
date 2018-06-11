@@ -173,8 +173,8 @@ Commands:
         {
             if(args.Count() == 0)
             {
-                //Help();
-                Search(args);
+                Help();
+                //Search(args);
             }
             else if (args[0] == "init")
             {
