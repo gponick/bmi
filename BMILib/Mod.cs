@@ -76,6 +76,7 @@ namespace BMILib
         public string Version;
         public Semver.SemVersion SemVer;
         public string Author;
+        public string Category;
         public string Website;
         public List<Octokit.Release> Releases = new List<Release>();
         private static Uri ghe = Utils.ghe;

@@ -49,7 +49,7 @@ namespace BMILib
             {
                 Mod mod = ModList[modName];
                 if(mod.LatestRelease == null)
-                    mod.fetchLatestReleaseFromWebsite();
+                    mod.fetchReleasesFromWebsite();
             }
             Initialized = true;
         }
