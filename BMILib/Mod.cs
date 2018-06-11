@@ -78,6 +78,7 @@ namespace BMILib
         public string Author;
         public string Category;
         public string Website;
+        public bool Initialized;
         public List<Octokit.Release> Releases = new List<Release>();
         private static Uri ghe = Utils.ghe;
         private static GitHubClient ghClient = Utils.ghClient;
@@ -95,9 +96,57 @@ namespace BMILib
             }
         }
 
+        public void LoadVersion()
+        {
+            DirectoryInfo di = new DirectoryInfo(Path.Combine(new DirectoryInfo(".").FullName, this.Name));
+            if (di.Exists)
+            {
+                var modFile = Path.Combine(di.FullName, "mod.json");
+                if (File.Exists(modFile))
+                {
+                    using (StreamReader file = File.OpenText(modFile))
+                    {
+                        var modjson = file.ReadToEnd();
+                        Mod tempMod = JsonConvert.DeserializeObject<Mod>(modjson);
+                        if (tempMod.Version != null && tempMod.Version != "")
+                        {
+                            if (Semver.SemVersion.TryParse(tempMod.Version, out tempMod.SemVer) == false)
+                                if (Semver.SemVersion.TryParse(tempMod.Version.Substring(1), out tempMod.SemVer) == false)
+                                    tempMod.SemVer = new Semver.SemVersion(0);
+
+
+                            this.SemVer = tempMod.SemVer;
+
+                                    
+                        }
+                    }
+                }
+            }
+        }
+         
         public bool NeedsUpdate()
         {
+            if (this.SemVer == null)
+                this.LoadVersion();
             if(this.Releases != null && this.Releases.Count > 0)
+            {
+                try
+                {
+                    this.fetchLatestReleaseFromWebsite();
+                }
+                catch
+                {
+                    try
+                    {
+                        this.fetchReleasesFromWebsite();
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+            if (this.Releases != null && this.Releases.Count > 0)
             {
                 Semver.SemVersion TagNameVersion = null;
                 if (Semver.SemVersion.TryParse(this.LatestRelease.TagName.Substring(1), out TagNameVersion) == false)
@@ -390,6 +439,17 @@ namespace BMILib
                 Console.WriteLine(e);
             }
             return false;
+        }
+
+        public bool IsInstalled()
+        {
+            DirectoryInfo di = new DirectoryInfo(Path.Combine(".", this.Name));
+            return di.Exists;
+        }
+
+        public void PrintSearchString()
+        {
+            Console.WriteLine($"{this.Name.Substring(0, Math.Min(30, this.Name.Length)),-30}|{this.LatestRelease.TagName + (this.IsInstalled() ? (this.NeedsUpdate() ? "+" : "*") : ""),-10}|{this.Category,-15}|{this.Website}");
         }
 
         public static Mod LoadFromDirectory(string directory)

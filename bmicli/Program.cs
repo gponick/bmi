@@ -145,15 +145,36 @@ Commands:
 );
         }
 
+        static void Search(string[] args)
+        {
+            BMILib.IndexClient.Initialize();
+            Console.WriteLine($"{"Name",-30}|{"Version",-10}|{"Catgeory",-15}|{"Website"}");
+            Console.WriteLine($"------------------------------+----------+---------------+-----------------------------------");
+            foreach (Mod m in BMILib.IndexClient.ModList.Values)
+            {
+                if (args.Count() > 1)
+                {
+                    if (m.Name.ToLower().Contains(args[1].ToLower()))
+                    {
+                        m.PrintSearchString();
+                    }
+                }
+                else
+                {
+
+                    m.PrintSearchString();
+                }
+            }
+            Console.WriteLine();
+            Console.WriteLine("Legend: [* Installed - Up-to-date] [+ Installed - Needs Update]");
+        }
+
         static void Main(string[] args)
         {
             if(args.Count() == 0)
             {
-                Help();
-                //    Initialize(false);
-                //    List(false);
-                //    Update("*",false);
-                //    List(false);
+                //Help();
+                Search(args);
             }
             else if (args[0] == "init")
             {
@@ -191,24 +212,7 @@ Commands:
             }
             else if (args[0] == "search")
             {
-                BMILib.IndexClient.Initialize();
-                Console.WriteLine($"{"Name",-30}|{"Version",-10}|{"Catgeory",-15}|{"Website"}");
-                Console.WriteLine($"------------------------------+----------+---------------+-----------------------------------");
-                foreach (Mod m in BMILib.IndexClient.ModList.Values)
-                {
-                    if (args.Count() > 1)
-                    {
-                        if (m.Name.ToLower().Contains(args[1].ToLower()))
-                        {
-                            Console.WriteLine($"{m.Name.Substring(0, Math.Min(30, m.Name.Length)),-30}|{m.LatestRelease.TagName,-10}|{m.Category,-15}|{m.Website}");
-                        }
-                    }
-                    else
-                    {
-
-                        Console.WriteLine($"{m.Name.Substring(0, Math.Min(30, m.Name.Length)),-30}|{m.LatestRelease.TagName,-10}|{m.Category,-15}|{m.Website}");
-                    }
-                }
+                Search(args);
             }
         }
     }
