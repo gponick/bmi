@@ -78,9 +78,9 @@ namespace BMILib
         public string Author;
         public string Website;
         public List<Octokit.Release> Releases = new List<Release>();
-        private static Uri ghe = new Uri("http://bmi.battletechgame.btmux.com:8086/");
-        private static GitHubClient ghClient = new GitHubClient(new ProductHeaderValue("Battletech-Mod-Installer"), ghe);
-        
+        private static Uri ghe = Utils.ghe;
+        private static GitHubClient ghClient = Utils.ghClient;
+
         public Dictionary<string, List<Tuple<string, string>>> JSONDirectories = new Dictionary<string, List<Tuple<string, string>>>();
 
 
@@ -118,6 +118,41 @@ namespace BMILib
                     return Releases.OrderByDescending(l => l.CreatedAt).First();
                 }
                 return null;
+            }
+        }
+
+        public void fetchLatestReleaseFromWebsite()
+        {
+            try
+            {
+                var releases = ghClient.Repository.Release.GetLatest(this.Author, this.Name);
+                releases.Wait();
+                this.Releases = new List<Release>();
+                this.Releases.Add(releases.Result);
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    string modauthor = "";
+                    string modname = "";
+                    var regex = new Regex("http.*://github.com/([A-Za-z0-9]*)/([A-Za-z0-9]*)");
+                    var match = regex.Match(this.Website);
+                    if (match.Success)
+                    {
+                        modauthor = match.Groups[1].Value;
+                        modname = match.Groups[2].Value;
+                    }
+                    var releases = ghClient.Repository.Release.GetLatest(modauthor, modname);
+                    releases.Wait();
+                    this.Releases = new List<Release>();
+                    this.Releases.Add(releases.Result);
+                }
+                catch (Exception ex)
+                {
+                    //Console.WriteLine(e);
+                    //Console.WriteLine(ex);
+                }
             }
         }
 
@@ -171,6 +206,56 @@ namespace BMILib
                 JSONDirectories[di.FullName].Add(data);
 
             }
+        }
+
+        public void Install()
+        {
+            try
+            {
+                
+                this.fetchLatestReleaseBytes();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
+            if (this.LatestReleaseFile == null || this.LatestReleaseFile.Length == 0)
+                return;
+            
+            System.IO.DirectoryInfo di = new DirectoryInfo(@".");
+            this.ModFullDirectory = Path.Combine(di.FullName, this.Name);
+            var latestReleaseFileName = System.IO.Path.Combine(di.FullName, this.LatestRelease.Assets[0].Name);
+            System.IO.File.WriteAllBytes(latestReleaseFileName, this.LatestReleaseFile);
+            if (latestReleaseFileName.ToLower().EndsWith(".zip"))
+            {
+                using (var archive = ZipArchive.Open(latestReleaseFileName))
+                {
+                    foreach (var entry in archive.Entries.Where(x => !x.IsDirectory))
+                    {
+                        entry.WriteToDirectoryGP(this.ModFullDirectory, this.Name, new ExtractionOptions()
+                        {
+                            ExtractFullPath = true,
+                            Overwrite = true
+                        });
+                    }
+                }
+            }
+            else if (latestReleaseFileName.ToLower().EndsWith(".rar"))
+            {
+                using (var archive = RarArchive.Open(latestReleaseFileName))
+                {
+                    foreach (var entry in archive.Entries.Where(x => !x.IsDirectory))
+                    {
+                        entry.WriteToDirectoryGP(this.ModFullDirectory, this.Name, new ExtractionOptions()
+                        {
+                            ExtractFullPath = true,
+                            Overwrite = true
+                        });
+                    }
+                }
+            }
+            System.IO.File.Delete(latestReleaseFileName);
         }
 
         public bool Update()

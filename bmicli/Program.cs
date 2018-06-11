@@ -68,7 +68,8 @@ namespace bmicli
             }
             if (toRemove != null)
                 mods.Remove(toRemove);
-            toRemove = Mod.LoadFromDirectory(toRemove.ModFullDirectory);
+            //toRemove = Mod.LoadFromDirectory(toRemove.ModFullDirectory);
+            toRemove = Mod.LoadFromDirectory(Path.Combine(di.FullName, modName == "*" ? "" : modName));
             mods.Add(toRemove);
 
             Console.WriteLine(@" SUCCESS!");
@@ -93,6 +94,16 @@ namespace bmicli
             }
         }
 
+        private static void Install(string name)
+        {
+            Mod m = BMILib.IndexClient.GetModByName(name);
+            Console.Write($"bmi> Installing {m.Name}...");
+            m.Install();
+            Console.WriteLine(" SUCCESS!");
+            Initialize(name,false);
+            List(false);
+        }
+
         public static void Update(string updateString = "*", bool fakecli = false)
         {
             if(fakecli)
@@ -110,10 +121,18 @@ namespace bmicli
         {
             if(args.Count() == 0)
             {
-                Initialize(false);
-                List(false);
-                Update("*",false);
-                List(false);
+                BMILib.IndexClient.Initialize();
+                Console.WriteLine($"{"Name",-30}|{"Version",-10}|{"Website"}");
+                Console.WriteLine($"------------------------------+----------+--------------------------------------------------");
+                foreach (Mod m in BMILib.IndexClient.ModList.Values)
+                {
+
+                    Console.WriteLine($"{m.Name.Substring(0, Math.Min(30, m.Name.Length)),-30}|{m.LatestRelease.TagName,-10}|{m.Website}");
+                }
+                //    Initialize(false);
+                //    List(false);
+                //    Update("*",false);
+                //    List(false);
             }
             else if (args[0] == "init")
             {
@@ -151,6 +170,33 @@ default without params = bmi update *
 Update supports *
 "
 );
+            }
+            else if(args[0] == "test")
+            {
+                Mod m = BMILib.IndexClient.GetModByName(args[1]);
+                Console.WriteLine($"{m.Website} -> {m.Releases.Count}");
+            }
+            else if (args[0] == "install")
+            {
+                Install(args[1]);
+            }
+            else if (args[0] == "search")
+            {
+                BMILib.IndexClient.Initialize();
+                Console.WriteLine($"{"Name",-30}|{"Version",-10}|{"Website"}");
+                Console.WriteLine($"------------------------------+----------+--------------------------------------------------");
+                foreach (Mod m in BMILib.IndexClient.ModList.Values)
+                {
+                    if (args.Count() > 1)
+                    {
+                        if (m.Name.ToLower().Contains(args[1].ToLower()))
+                            Console.WriteLine($"{m.Name.Substring(0, Math.Min(30, m.Name.Length)),-30}|{m.LatestRelease.TagName,-10}|{m.Website}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{m.Name.Substring(0, Math.Min(30, m.Name.Length)),-30}|{m.LatestRelease.TagName,-10}|{m.Website}");
+                    }
+                }
             }
         }
     }
