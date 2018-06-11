@@ -123,12 +123,33 @@ namespace bmicli
             Initialize(updateString, false);
 
         }
+        
+        static void Help()
+        {
+            Console.WriteLine(
+@"
+Battletech Mod Installerizer
+
+Usage:
+  bmi <command> [options]
+
+Commands:
+  install       [modname]     Install latest release of [modname] Will not install if [modname] is already installed.
+  uninstall     [modname]     Uninstall [modname] (NOT IMPLEMENTED)
+  list                        List installed mods.
+  show          [modname]     Show information about installed [modname] (NOT IMPLEMENTED)
+  update        [modname]     Update [modname] to latest version (NOT SUPPORTED)
+  search        (modname)     Search bmi-index for mods. Optional argument (modname) is a case insensitive wildcard search (eg: *(modname) )
+  help                        Show help for commands.
+"
+);
+        }
 
         static void Main(string[] args)
         {
             if(args.Count() == 0)
             {
-
+                Help();
                 //    Initialize(false);
                 //    List(false);
                 //    Update("*",false);
@@ -162,19 +183,7 @@ namespace bmicli
             }
             else if(args[0] == "help")
             {
-                Console.WriteLine(
-@"
-Battletech Mod Installerizer
-Usage: bmi (list|update) [modname (if update)]
-default without params = bmi update *
-Update supports *
-"
-);
-            }
-            else if(args[0] == "test")
-            {
-                Mod m = BMILib.IndexClient.GetModByName(args[1]);
-                Console.WriteLine($"{m.Website} -> {m.Releases.Count}");
+                Help();
             }
             else if (args[0] == "install")
             {
