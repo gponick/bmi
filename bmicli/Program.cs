@@ -60,7 +60,7 @@ namespace bmicli
             Mod toRemove = null;
             foreach(Mod m in mods)
             {
-                if(m.Name == modName)
+                if(m.Name.Equals(modName,StringComparison.OrdinalIgnoreCase))
                 {
                     toRemove = m;
                     break;
@@ -117,7 +117,7 @@ namespace bmicli
                 Console.WriteLine($"C:\\BattleTech\\Mods\\> bmi update  {updateString}");
             foreach (Mod m in mods.Where(mm => mm.NeedsUpdate()))
             {
-                if(updateString == "*" || m.Name == updateString)
+                if(updateString == "*" || m.Name.Equals(updateString,StringComparison.OrdinalIgnoreCase))
                     Console.WriteLine($"bmi> Updating {m.Name} from {m.Version} to {m.LatestRelease.TagName}... {(m.Update() ? "Success" : "FAIL!")}");
             }
             Initialize(updateString, false);

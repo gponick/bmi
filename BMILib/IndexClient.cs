@@ -17,14 +17,15 @@ namespace BMILib
 
         public static Mod GetModByName(string name)
         {
-            if(!Initialized)
+            if (!Initialized)
             {
                 Initialize();
             }
+            Dictionary<string, Mod> localModList = new Dictionary<string, Mod>(ModList, StringComparer.OrdinalIgnoreCase);
             Mod m = null;
-            if (ModList.ContainsKey(name))
+            if (localModList.ContainsKey(name))
             {
-                m = ModList[name];
+                m = localModList[name];
             }
             return m;
         }

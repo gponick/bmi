@@ -481,7 +481,21 @@ namespace BMILib
                         {
                             tempMod.enumerateDirectoryForJson(did);
                         }
-                        tempMod.fetchReleasesFromWebsite();
+                        try
+                        {
+                            tempMod.fetchLatestReleaseFromWebsite();
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                tempMod.fetchReleasesFromWebsite();
+                            }
+                            catch
+                            {
+
+                            }
+                        }
                         if (tempMod.Name == null)
                             tempMod.Name = "??";
                         return tempMod;
