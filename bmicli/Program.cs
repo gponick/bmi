@@ -156,7 +156,7 @@ namespace bmicli
         {
             Console.WriteLine(
 @"
-Battletech Mod Installerizer {
+Battletech Mod Installerizer
 
 Usage:
   bmi <command> [options]
