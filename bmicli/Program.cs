@@ -10,6 +10,7 @@ namespace bmicli
 {
     class Program
     {
+        public static string Version = "v0.0.1";
         public static List<Mod> mods = new List<Mod>();
         static void Initialize(bool fakecli = true)
         {
@@ -155,7 +156,7 @@ namespace bmicli
         {
             Console.WriteLine(
 @"
-Battletech Mod Installerizer
+Battletech Mod Installerizer {
 
 Usage:
   bmi <command> [options]
@@ -171,6 +172,7 @@ Commands:
   help                        Show help for commands.
 "
 );
+            Console.WriteLine($"Version: {Program.Version}");
         }
 
         static void Search(string[] args)
