@@ -12,7 +12,7 @@ namespace bmicli
     {
         public static string Version = "v0.0.1";
         public static List<Mod> mods = new List<Mod>();
-        static void Initialize(bool fakecli = true)
+        static void Initialize(bool fakecli = false)
         {
             mods.Clear();
             if (fakecli)
@@ -40,7 +40,7 @@ namespace bmicli
             }
             Console.WriteLine(@" SUCCESS!");
         }
-        static void Initialize(string modName, bool fakecli = true)
+        static void Initialize(string modName, bool fakecli = false)
         {
             if(modName == "")
             {
