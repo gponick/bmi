@@ -258,6 +258,69 @@ namespace BMILib
             }
         }
 
+        public void Install(string version)
+        {
+            try
+            {
+                this.fetchReleasesFromWebsite();
+                var releases = this.Releases.Where(m => m.TagName.Contains(version));
+                if(releases.Count() > 1)
+                {
+                    throw new Exception($"Too many versions match the string: {version} for mod: {this.Name}");
+                }
+                else if(releases.Count() == 0)
+                {
+                    throw new Exception($"0 versions match the string: {version} for mod: {this.Name}");
+                }
+                else
+                {
+                    Release r = releases.First();
+                    using (var client = new WebClient())
+                    {
+                        var releaseFile = client.DownloadData(r.Assets[0].BrowserDownloadUrl);
+                        System.IO.DirectoryInfo di = new DirectoryInfo(@".");
+                        this.ModFullDirectory = Path.Combine(di.FullName, this.Name);
+                        var latestReleaseFileName = System.IO.Path.Combine(di.FullName, r.Assets[0].Name);
+                        System.IO.File.WriteAllBytes(latestReleaseFileName, releaseFile);
+                        if (latestReleaseFileName.ToLower().EndsWith(".zip"))
+                        {
+                            using (var archive = ZipArchive.Open(latestReleaseFileName))
+                            {
+                                foreach (var entry in archive.Entries.Where(x => !x.IsDirectory))
+                                {
+                                    entry.WriteToDirectoryGP(this.ModFullDirectory, this.Name, new ExtractionOptions()
+                                    {
+                                        ExtractFullPath = true,
+                                        Overwrite = true
+                                    });
+                                }
+                            }
+                        }
+                        else if (latestReleaseFileName.ToLower().EndsWith(".rar"))
+                        {
+                            using (var archive = RarArchive.Open(latestReleaseFileName))
+                            {
+                                foreach (var entry in archive.Entries.Where(x => !x.IsDirectory))
+                                {
+                                    entry.WriteToDirectoryGP(this.ModFullDirectory, this.Name, new ExtractionOptions()
+                                    {
+                                        ExtractFullPath = true,
+                                        Overwrite = true
+                                    });
+                                }
+                            }
+                        }
+                        System.IO.File.Delete(latestReleaseFileName);
+                    }
+
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
         public void Install()
         {
             try

@@ -94,6 +94,33 @@ namespace bmicli
             }
         }
 
+        private static void Install(string[] args)
+        {
+            if (args.Length == 2)
+                Install(args[1]);
+            if (args.Length == 3)
+                Install(args[1], args[2]);
+
+        }
+
+        private static void Install(string name, string version)
+        {
+            Initialize(false);
+            if (mods.Where(md => md.Name.ToLower() == name.ToLower()).Count() > 0)
+            {
+                Console.WriteLine($"bmi> Installing {name}... FAIL!");
+                Console.WriteLine($"     MOD ALREADY INSTALLED!");
+                return;
+            }
+            Mod m = BMILib.IndexClient.GetModByName(name);
+            Console.Write($"bmi> Installing {m.Name} [Version: {version}]...");
+            m.Install(version);
+            Console.WriteLine(" SUCCESS!");
+            Initialize(m.Name, false);
+            List(false);
+
+        }
+
         private static void Install(string name)
         {
             Initialize();
@@ -134,10 +161,11 @@ Usage:
   bmi <command> [options]
 
 Commands:
+  init                        Initialize Mod directory (Installs and/or updates modtek.dll) (NOT SUPPORTED)
   install       [modname]     Install latest release of [modname] Will not install if [modname] is already installed.
   uninstall     [modname]     Uninstall [modname] (NOT IMPLEMENTED)
   list                        List installed mods.
-  show          [modname]     Show information about installed [modname] (NOT IMPLEMENTED)
+  show          [modname]     Show information about [modname] (NOT SUPPORTED)
   update        [modname]     Update [modname] to latest version (NOT SUPPORTED)
   search        (modname)     Search bmi-index for mods. Optional argument (modname) is a case insensitive wildcard search (eg: *(modname) )
   help                        Show help for commands.
@@ -150,7 +178,7 @@ Commands:
             BMILib.IndexClient.Initialize();
             Console.WriteLine($"{"Name",-30}|{"Version",-10}|{"Catgeory",-15}|{"Website"}");
             Console.WriteLine($"------------------------------+----------+---------------+-----------------------------------");
-            foreach (Mod m in BMILib.IndexClient.ModList.Values)
+            foreach (Mod m in BMILib.IndexClient.ModList.Values.OrderBy(ml=>ml.Name))
             {
                 if (args.Count() > 1)
                 {
@@ -169,16 +197,72 @@ Commands:
             Console.WriteLine("Legend: [* Installed - Up-to-date] [+ Installed - Needs Update]");
         }
 
+        static void Show(string[] args)
+        {
+            Mod m = BMILib.IndexClient.GetModByName(args[1]);
+            m.fetchReleasesFromWebsite();
+            Console.WriteLine($"Mod info for: {m.Name}");
+            Console.WriteLine($"Author:       {m.Author}");
+            Console.WriteLine($"Website:      {m.Website}");
+            Console.WriteLine($"Category:     {m.Category}");
+            Console.WriteLine($"----------------------- INSTALLABLE VERSIONS -----------------------");
+            Console.WriteLine($"{"Version",-20}|Description");
+            Console.WriteLine($"--------------------+-----------------------------------------------");
+            foreach(var release in m.Releases)
+            {
+                string body = "";
+                if(release.Body != "")
+                {
+                    if (release.Body.Length <= 255)
+                        body = release.Body;
+                    else
+                        body = release.Body.Substring(0, 255);
+                }
+                if(body.Contains('\n'))
+                {
+                    body = body.Split('\n')[0];
+                }
+                if (body == "")
+                    body = release.Name;
+                Console.WriteLine($"{release.TagName,-20}|{body}");
+                Console.WriteLine($"--------------------+-----------------------------------------------");
+            }
+        }
+
+        static void Create()
+        {
+            Console.WriteLine($"bmi> Initializing Mod directory.");
+            Console.WriteLine($"bmi> Checking for existence of Modtek");
+            // check here
+            if(File.Exists(Path.Combine(".","modtek.dll")))
+            {
+                Console.WriteLine($"bmi> modtek.dll exists. Backing it up to Modtek.dll.old!");
+                if(File.Exists(Path.Combine(".", "modtek.dll.old")))
+                    File.Delete(Path.Combine(".", "modtek.dll.old"));
+                File.Move(Path.Combine(".", "modtek.dll"), Path.Combine(".", "modtek.dll.old"));
+            }
+            Console.WriteLine($"bmi> Fetching Modtek from internet...");
+            Mod m = new Mod();
+            m.Website = "https://github.com/Mpstark/ModTek";
+            m.fetchLatestReleaseFromWebsite();
+            m.fetchLatestReleaseBytes();
+            if(m.LatestReleaseFile != null && m.LatestReleaseFile.Count() > 0)
+            {
+                Console.Write($"bmi> Installing Modtek version {m.LatestRelease.TagName}...");
+                System.IO.File.WriteAllBytes("modtek.dll", m.LatestReleaseFile);
+                Console.WriteLine(" SUCCESS!");
+            }
+        }
+
         static void Main(string[] args)
         {
             if(args.Count() == 0)
             {
                 Help();
-                //Search(args);
             }
             else if (args[0] == "init")
             {
-                Initialize();
+                Create();
             }
             else if (args[0] == "list")
             {
@@ -208,11 +292,15 @@ Commands:
             }
             else if (args[0] == "install")
             {
-                Install(args[1]);
+                Install(args);
             }
             else if (args[0] == "search")
             {
                 Search(args);
+            }
+            else if (args[0] == "show")
+            {
+                Show(args);
             }
         }
     }
