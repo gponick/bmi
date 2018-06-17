@@ -168,7 +168,7 @@ Commands:
   list                        List installed mods.
   show          [modname]     Show information about [modname] (NOT SUPPORTED)
   update        [modname]     Update [modname] to latest version (NOT SUPPORTED)
-  search        (modname)     Search bmi-index for mods. Optional argument (modname) is a case insensitive wildcard search (eg: *(modname) )
+  search        (modname)     Search bmi-index for mods. Optional argument (modname) is a case insensitive wildcard search (eg: *(modname)* )
   help                        Show help for commands.
 "
 );
