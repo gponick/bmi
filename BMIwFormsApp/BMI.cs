@@ -12,7 +12,7 @@ using System.Windows.Forms;
 using BMILib;
 using Octokit;
 
-namespace WindowsFormsApp1
+namespace BMIwFormsApp
 {
     public partial class BMI : Form
     {
@@ -93,7 +93,7 @@ namespace WindowsFormsApp1
         BindingSource bs = new BindingSource();
         List<Mod> mods = new List<Mod>();
 
-        public static void RefreshModList(IProgress<LoadProgress> progress, WindowsFormsApp1.BMI form)
+        public static void RefreshModList(IProgress<LoadProgress> progress, BMIwFormsApp.BMI form)
         {
 
             form.mods.Clear();
@@ -151,7 +151,7 @@ namespace WindowsFormsApp1
                 //bs.Add(BMIObj.FromMod(m));
             }
 
-            form.bs.DataSource = WindowsFormsApp1.BMI.CreateDataTable<BMIObj>(form.mods.Select(m => BMIObj.FromMod(m)).ToList());
+            form.bs.DataSource = BMIwFormsApp.BMI.CreateDataTable<BMIObj>(form.mods.Select(m => BMIObj.FromMod(m)).ToList());
             form.dataGridView1.DataSource = form.bs;
             form.dataGridView1.AutoGenerateColumns = false;
             (form.bs.DataSource as DataTable).DefaultView.RowFilter = string.Format("Name LIKE '%{0}%' OR Author LIKE '%{0}%'", form.filterTextBox.Text);

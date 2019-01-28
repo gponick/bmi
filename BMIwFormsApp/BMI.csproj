@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>WindowsFormsApp1.Program</StartupObject>
+    <StartupObject>BMIwFormsApp.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Octokit">

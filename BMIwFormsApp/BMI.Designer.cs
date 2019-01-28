@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
-namespace WindowsFormsApp1
+namespace BMIwFormsApp
 {
     partial class BMI
     {
@@ -132,11 +132,11 @@ namespace WindowsFormsApp1
             // 
             // bMIObjBindingSource1
             // 
-            this.bMIObjBindingSource1.DataSource = typeof(WindowsFormsApp1.BMI.BMIObj);
+            this.bMIObjBindingSource1.DataSource = typeof(BMIwFormsApp.BMI.BMIObj);
             // 
             // bMIObjBindingSource
             // 
-            this.bMIObjBindingSource.DataSource = typeof(WindowsFormsApp1.BMI.BMIObj);
+            this.bMIObjBindingSource.DataSource = typeof(BMIwFormsApp.BMI.BMIObj);
             // 
             // tabControl1
             // 
