@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMILib", "BMILib\BMILib.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bmicli", "bmicli\bmicli.csproj", "{F69D8DC5-A1A6-40FD-AA3F-EFC62EF7A985}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMI", "WindowsFormsApp1\BMI.csproj", "{AE18DFE2-03D6-4302-AA2B-F88162ADECC0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F69D8DC5-A1A6-40FD-AA3F-EFC62EF7A985}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F69D8DC5-A1A6-40FD-AA3F-EFC62EF7A985}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F69D8DC5-A1A6-40FD-AA3F-EFC62EF7A985}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE18DFE2-03D6-4302-AA2B-F88162ADECC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE18DFE2-03D6-4302-AA2B-F88162ADECC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE18DFE2-03D6-4302-AA2B-F88162ADECC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE18DFE2-03D6-4302-AA2B-F88162ADECC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
